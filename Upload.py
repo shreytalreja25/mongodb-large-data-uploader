@@ -19,12 +19,16 @@ def upload_chunk(chunk):
     collection.insert_many(chunk)
     client.close()
 
-# Read the JSON file in chunks and upload to MongoDB
+# Read the JSON file and upload in chunks
 chunk_size = 1000
 data = []
+
 with open(json_file_path, 'r') as json_file:
-    for line in json_file:
-        data.append(json.loads(line))
+    json_data = json.load(json_file)
+    data_records = json_data["main"]["DATA_RECORD"]
+    
+    for record in data_records:
+        data.append(record)
         if len(data) == chunk_size:
             upload_chunk(data)
             data = []
